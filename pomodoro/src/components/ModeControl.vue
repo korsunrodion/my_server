@@ -102,8 +102,8 @@
         position: relative;
 
         div {
-            height: 50px;
-            width: 50px;
+            height: 60px;
+            width: 60px;
             background-color: $primary-color;
             border-radius: 50%;
 
@@ -116,17 +116,17 @@
             position: absolute;
 
             &#work_btn {
-                right: -25px;
+                left: -30px;
             }
 
             &#sbreak_btn {
-                top: 70px;
+                top: 110px;
                 left: 0px;
             }
 
             &#lbreak_btn {
-                top: 140px;
-                right: -25px;
+                top: 220px;
+                left: -30px;
             }
         }
     }

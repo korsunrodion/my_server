@@ -1,13 +1,7 @@
 import Vue from 'vue'
-import VueAnime from 'vue-animejs';
-import Buefy from 'buefy'
-import 'buefy/dist/buefy.css'
 import App from './App.vue'
 
 var assert = require('assert');
-
-Vue.use(Buefy)
-Vue.use(VueAnime)
 
 Vue.config.productionTip = false
   
