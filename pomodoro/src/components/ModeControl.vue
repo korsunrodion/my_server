@@ -98,12 +98,13 @@
     @import "src/styles/global.scss";
 
     #control {
-        border: 1px solid black;
         position: relative;
 
         div {
-            height: 60px;
-            width: 60px;
+            height: $control-size;
+            width: $control-size;
+            max-height: $control-max-size;
+            max-width: $control-max-size;
             background-color: $primary-color;
             border-radius: 50%;
 
@@ -115,19 +116,39 @@
 
             position: absolute;
 
-            &#work_btn {
-                left: -30px;
+            @media screen and (min-width: $timer_max_size/6*10) {
+                &#work_btn {
+                    left: -50px;
+                    // top: 40px;
+                }
+
+                &#sbreak_btn {
+                    top: 110px;
+                    // left: 0px;
+                }
+
+                &#lbreak_btn {
+                    top: 220px;
+                    // left: -30px;
+                }
+            }
+            @media screen and (max-width: $timer_max_size/6*10) {
+                &#work_btn {
+                    left: -5vw;
+                }
+
+                &#sbreak_btn {
+                    top: 15vw;
+                    left: 2vw;
+                }
+
+                &#lbreak_btn {
+                    top: 30vw;
+                    left: 2vw;
+                }
+                // padding: $timer_size*math.sqrt(3)/2/3 0 0 0;
             }
 
-            &#sbreak_btn {
-                top: 110px;
-                left: 0px;
-            }
-
-            &#lbreak_btn {
-                top: 220px;
-                left: -30px;
-            }
         }
     }
 </style>
