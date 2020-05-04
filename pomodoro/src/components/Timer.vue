@@ -1,8 +1,10 @@
 <template>
     <div id="timer">
-        <div id="shell"></div>
+        <div id="shell_wrap">
+            <div id="shell" v-bind:class="regime"></div>
+        </div>
         <div id="timer_text_wrap">
-            <span id="text">{{ Math.floor(time_seconds / 60) }}:{{ (time_seconds % 60).toString().padStart(2, '0') }}</span>
+            <span id="text">{{ Math.floor(counter / 60) }}:{{ (counter % 60).toString().padStart(2, '0') }}</span>
         </div>
     </div>
 </template>
@@ -12,34 +14,45 @@
         name: 'Timer',
         props: {
             time_seconds: { type: Number, required: true },
-            is_running: { type: Number, required: true }
+            is_running: { type: Number, required: true },
+            regime: { type: String, required: true }
         },
         data() {
             return {
-                initial_time: this.time_seconds,
                 counter: 0,
                 timeoutId: null
             }
         },
+        mounted() {
+            this.counter = Number(this.time_seconds)
+        },
         watch: {
             is_running(newValue) {
+                this.counter = Number(this.time_seconds)
                 if (newValue > 0) {
-                    this.counter = this.time_seconds
+                    this.start_timer()
                 } else {
-                    this.counter = 0
+                    this.stop_timer()
                 }
             },
-            counter(newCounter) {
-                if (newCounter > 0) {  
-                    setTimeout(() => {
-                        this.counter--
-                        console.log(this.time_seconds)
-                    }, 1000);
-                } 
+            regime(/*newValue*/) {
+                
+            },
+            time_seconds(newValue) {
+                this.counter = Number(newValue)
             }
         },
         methods: {  
-
+            start_timer() {
+                this.timeoutId = setInterval(() => {
+                    this.counter--
+                }, 1000)
+            },
+            stop_timer() {
+                if (this.timeoutId != null) {
+                    clearInterval(this.timeoutId)
+                }
+            }
         }
     }
 </script>
@@ -50,22 +63,52 @@
     #timer {
         position: relative;
 
-        #shell {
+        #shell_wrap {
             width: 100%;
             height: 100%;
 
-            background-color: $primary-color;
-            border-radius: 50%;
-            margin: 0 auto;
-
+            // background-color: $primary-color;
+            // border-radius: 50%;
+            
             transition: transform 0.5s;
+            #shell {
+                width: 100%;
+                height: 100%;
+
+                border-radius: 50%;
+                margin: 0 auto;
+
+                transition: all 0.5s;
+
+                box-shadow: 0.5em 0.5em 1em -0.125em rgba(10,10,10,.2), 0 0 0 1px rgba(10,10,10,.02);
+
+                &.work {
+                    background-color: $primary-color;
+                }
+
+                &.sbreak {
+                    background-color: $short_break_color;
+                }
+
+                &.lbreak {
+                    background-color: $long_break_color;
+                }
+
+                &.choice {
+                    background-color: #4D5359;
+                }
+            }
         }
 
-        &.running #shell {
-            transform: scale(2);
+        &.running #shell_wrap {
+            transform: scale(2); 
 
+            #shell {
+                -webkit-animation: pulsate-fwd 1s ease-in-out 0.6s infinite both;
+                animation: pulsate-fwd 1s ease-in-out 0.6s infinite both;
+            }
         }
-        &.nRunning #shell {
+        &.nRunning #shell_wrap {
             transform: scale(1);
         }
 
@@ -85,6 +128,5 @@
             }
         }   
     }
-
      
 </style>

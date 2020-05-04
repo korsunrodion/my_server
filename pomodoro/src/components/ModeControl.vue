@@ -1,93 +1,47 @@
 <template>
     <div id="control" ref="control">
-        <div id="work_btn" ref="work" v-on:click="clicked('work')">W</div>
-        <div id="sbreak_btn" ref="sbreak" v-on:click="clicked('sbreak')">S</div>
-        <div id="lbreak_btn" ref="lbreak" v-on:click="clicked('lbreak')">L</div>
+        <div id="work_btn" ref="work" v-bind:class="{active: (state=='work'), choice: (state=='choice')}" v-on:click="clicked('work')">W</div>
+        <div id="sbreak_btn" ref="sbreak" v-bind:class="{active: (state=='sbreak'), choice: (state=='choice')}" v-on:click="clicked('sbreak')">S</div>
+        <div id="lbreak_btn" ref="lbreak" v-bind:class="{active: (state=='lbreak'), choice: (state=='choice')}" v-on:click="clicked('lbreak')">L</div>
     </div>
 </template>
 
 <script>
-    var assert = require('assert');
-
-    var fade = function(el) {
-        el.style.visibility = 'hidden'
-    }
-
-    var appear = function(el) {
-        el.style.visibility = 'visible'
-    }
-
-    var MODES = ['work', 'sbreak', 'lbreak']
-
-    var STATES = ['set', 'choice']
-
     export default {
         name: 'ModeControl',
 
+        // props: {
+        //     state_prop: { type: String, required: true },
+        // },
+
         data() {
-            return {
-                state: null,
-                mode: null,
+            return { 
+                state: 'work'
             }
         },
-        mounted: function () {
-            this.state = 'set'
-            this.mode = 'work'
+        mounted: function () {  
+            // this.state = 
         },
         watch: {
-            // '#work_btn': function () {}
-            mode: function(newMode) {
-                console.log('check', newMode)
-
-                // this.$anime.timeline().add({
-                    
-                // })
-
-                switch(newMode) {
-                    case 'work':
-                        appear(this.$refs.work)
-                        fade(this.$refs.sbreak)
-                        fade(this.$refs.lbreak)
-                    break;
-                    case 'sbreak':
-                        appear(this.$refs.sbreak)
-                        fade(this.$refs.work)
-                        fade(this.$refs.lbreak)
-                    break;
-                    case 'lbreak':
-                        appear(this.$refs.lbreak)
-                        fade(this.$refs.sbreak)
-                        fade(this.$refs.work)
-                    break;
-                }
-            },
-            state: function(newState) {
-                if (newState == 'choice') {
-                    appear(this.$refs.work)
-                    appear(this.$refs.sbreak)
-                    appear(this.$refs.lbreak)
-                }
+            state: function() {
+                this.$emit('state_changed', this.state)
             }
         },
         methods: {
             set_state(newState) {
-                assert(STATES.includes(newState))
                 this.state = newState
             },
             get_state() {
                 return this.state
             },
             set_mode(newMode) {
-                assert(MODES.include(newMode))
                 this.mode = newMode
             },
             clicked(btn_name) {
-                console.log(this)
-                if (this.state == 'set') {
+                if (this.state != 'choice') {
                     this.state = 'choice'
                 } else if (this.state == 'choice') {
-                    this.mode = btn_name
-                    this.state = 'set'
+                    this.state = btn_name
                 }
             }
         }
@@ -108,6 +62,8 @@
             background-color: $primary-color;
             border-radius: 50%;
 
+            box-shadow: 0.5em 0.5em 1em -0.125em rgba(10,10,10,0.2), 0 0 0 1px rgba(10,10,10,.02);
+
             display: flex;
             justify-content: center;
             align-items: center;
@@ -115,6 +71,24 @@
             color: white;
 
             position: absolute;
+            visibility: hidden;
+            opacity: 0;
+
+            transition-timing-function: ease-out;
+            transition: 0.5s;
+
+            &.active {
+                visibility: visible;
+                opacity: 1;
+                // transform: scale(1.2);
+            }   
+
+
+            &.choice {
+                visibility: visible;
+                opacity: 1;
+                transform: scale(1.2);
+            }   
 
             @media screen and (min-width: $timer_max_size/6*10) {
                 &#work_btn {
@@ -124,12 +98,14 @@
 
                 &#sbreak_btn {
                     top: 110px;
-                    // left: 0px;
+                    left: 10px;
+                    background-color: $short-break-color;
                 }
 
                 &#lbreak_btn {
-                    top: 220px;
-                    // left: -30px;
+                    top: 230px;
+                    left: 20px;
+                    background-color: $long-break-color;
                 }
             }
             @media screen and (max-width: $timer_max_size/6*10) {
@@ -140,11 +116,13 @@
                 &#sbreak_btn {
                     top: 15vw;
                     left: 2vw;
+                    background-color: $short-break-color;
                 }
 
                 &#lbreak_btn {
                     top: 30vw;
                     left: 2vw;
+                    background-color: $long-break-color;
                 }
                 // padding: $timer_size*math.sqrt(3)/2/3 0 0 0;
             }
